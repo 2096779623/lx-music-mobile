@@ -46,7 +46,7 @@ jobs:
       - name: Build Packages
         run: |
           cd android
-          ./gradlew assembleRelease -PMYAPP_UPLOAD_STORE_FILE='app/debug.keystore' -PMYAPP_UPLOAD_KEY_ALIAS='debug' -PMYAPP_UPLOAD_STORE_PASSWORD='123456' -PMYAPP_UPLOAD_KEY_PASSWORD='123456'
+          ./gradlew assembleRelease -PMYAPP_UPLOAD_STORE_FILE='debug.keystore' -PMYAPP_UPLOAD_KEY_ALIAS='debug' -PMYAPP_UPLOAD_STORE_PASSWORD='123456' -PMYAPP_UPLOAD_KEY_PASSWORD='123456'
 
       # Push tag to GitHub if package.json version's tag is not tagged
       - name: Get package version
