@@ -53,7 +53,7 @@ jobs:
       - name: Get package version
         run: |
           cd ..
-          node -p -e '`PACKAGE_VERSION=${require("../package.json").version}`' >> $GITHUB_ENV
+          node -p -e '`PACKAGE_VERSION=${require("./package.json").version}`' >> $GITHUB_ENV
 
       - name: Create git tag
         uses: pkgdeps/git-tag-action@v2
