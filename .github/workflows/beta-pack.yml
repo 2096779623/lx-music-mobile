@@ -85,7 +85,7 @@ jobs:
             android/app/build/outputs/apk/release/lx-music-mobile-v${{ env.PACKAGE_VERSION }}-x86.apk
             android/app/build/outputs/apk/release/lx-music-mobile-v${{ env.PACKAGE_VERSION }}-universal.apk
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Artifact arm64-v8a
         uses: actions/upload-artifact@v3
