@@ -58,7 +58,7 @@ jobs:
       - name: Create git tag
         uses: pkgdeps/git-tag-action@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           github_repo: ${{ github.repository }}
           version: ${{ env.PACKAGE_VERSION }}
           git_commit_sha: ${{ github.sha }}
@@ -86,7 +86,7 @@ jobs:
             android/app/build/outputs/apk/release/lx-music-mobile-v${{ env.PACKAGE_VERSION }}-x86.apk
             android/app/build/outputs/apk/release/lx-music-mobile-v${{ env.PACKAGE_VERSION }}-universal.apk
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Artifact arm64-v8a
         uses: actions/upload-artifact@v3
