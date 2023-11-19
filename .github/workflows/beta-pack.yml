@@ -52,15 +52,12 @@ jobs:
 
       - name: Get package version
         run: |
-          ls -lah .
-          echo aaaaaaaaa
-          ls .. -lah
           node -p -e '`PACKAGE_VERSION=${require("./package.json").version}`' >> $GITHUB_ENV
 
       - name: Create git tag
         uses: pkgdeps/git-tag-action@v2
         with:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN }}
           github_repo: ${{ github.repository }}
           version: ${{ env.PACKAGE_VERSION }}
           git_commit_sha: ${{ github.sha }}
