@@ -13,6 +13,8 @@ const abis = [
 ]
 
 const address = [
+  [`https://raw.xb6868.com/2096779623/${name}/beta/publish/version.json`, 'direct'],
+  [`https://raw.fgit.cf/2096779623/${name}/beta/publish/version.json`, 'direct'],
   [`https://raw.githubusercontent.com/2096779623/${name}/beta/publish/version.json`, 'direct'],
 ]
 
