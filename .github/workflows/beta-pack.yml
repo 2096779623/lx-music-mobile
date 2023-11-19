@@ -58,28 +58,28 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-arm64-v8a-release
-          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.5-arm64-v8a.apk
+          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.6-arm64-v8a.apk
 
       - name: Upload Artifact armeabi-v7a
         uses: actions/upload-artifact@v3
         with:
           name: app-armeabi-v7a-release
-          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.5-armeabi-v7a.apk
+          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.6-armeabi-v7a.apk
 
       - name: Upload Artifact universal
         uses: actions/upload-artifact@v3
         with:
           name: app-universal-release
-          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.5-universal.apk
+          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.6-universal.apk
 
       - name: Upload Artifact x86_64
         uses: actions/upload-artifact@v3
         with:
           name: app-x86_64-release
-          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.5-x86_64.apk
+          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.6-x86_64.apk
 
       - name: Upload Artifact x86
         uses: actions/upload-artifact@v3
         with:
           name: app-x86-release
-          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.5-x86.apk
+          path: android/app/build/outputs/apk/release/lx-music-mobile-v1.2.0-beta.6-x86.apk
