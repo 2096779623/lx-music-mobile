@@ -81,7 +81,7 @@ let apkSavePath
 
 export const downloadNewVersion = async(version, onDownload = noop) => {
   const abi = await getTargetAbi()
-  const url = `https://github.com/2096779623/${name}/releases/download/v${version}/${name}-v${version}-${abi}.apk`
+  const url = `https://hub.xb6868.com/2096779623/${name}/releases/download/v${version}/${name}-v${version}-${abi}.apk`
   let savePath = temporaryDirectoryPath + '/lx-music-mobile.apk'
 
   if (downloadJobId) stopDownload(downloadJobId)
