@@ -62,7 +62,7 @@ export default forwardRef<ListMenuType, ListMenuProps>((props, ref) => {
     const menu = [
       { action: 'play', label: t('play') },
       { action: 'playLater', label: t('play_later') },
-      // { action: 'download', label: '下载' },
+      { action: 'download', label: '下载' },
       { action: 'add', label: t('add_to') },
       { action: 'move', label: t('move_to') },
       { action: 'copyName', label: t('copy_name') },
@@ -84,7 +84,7 @@ export default forwardRef<ListMenuType, ListMenuProps>((props, ref) => {
         const menu = [
           { action: 'play', label: t('play') },
           { action: 'playLater', label: t('play_later') },
-          // { action: 'download', label: '下载' },
+          { action: 'download', label: '下载' },
           { action: 'add', label: t('add_to') },
           { action: 'move', label: t('move_to') },
           { action: 'copyName', label: t('copy_name') },
@@ -137,6 +137,9 @@ export default forwardRef<ListMenuType, ListMenuProps>((props, ref) => {
         break
       case 'remove':
         props.onRemove(selectInfo)
+        break
+      case 'download':
+        props.onDownload(selectInfo)
         break
       default:
         break
