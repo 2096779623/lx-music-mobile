@@ -15,6 +15,7 @@ import ListMusicSearch, { type ListMusicSearchType } from './ListMusicSearch'
 import MusicPositionModal, { type MusicPositionModalType } from './MusicPositionModal'
 import MetadataEditModal, { type MetadataEditType, type MetadataEditProps } from '@/components/MetadataEditModal'
 import MusicToggleModal, { type MusicToggleModalType } from './MusicToggleModal'
+import {downloadMusic} from "@/core/music/utils";
 
 
 export default () => {
@@ -163,7 +164,13 @@ export default () => {
         onMove={handleMoveMusic}
         onEditMetadata={handleEditMetadata}
         onChangePosition={info => musicPositionModalRef.current?.show(info)}
+<<<<<<< HEAD
         onToggleSource={info => musicToggleModalRef.current?.show(info)}
+=======
+        onDownload={(info)=>{
+          downloadMusic(info.musicInfo as LX.Music.MusicInfoOnline)
+        }}
+>>>>>>> afe4fe7 (support download)
       />
       <MetadataEditModal
         ref={metadataEditTypeRef}
