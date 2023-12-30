@@ -12,13 +12,6 @@ jobs:
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
-
-name: Setup
-description: Setup Env
-
-runs:
-  using: composite
-  steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
