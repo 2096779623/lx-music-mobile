@@ -18,6 +18,9 @@ const Content = () => {
   const openHomePage = () => {
     void openUrl('https://github.com/lyswhut/lx-music-mobile#readme')
   }
+  const openForkerrepoPage = () => {
+    void openUrl('https://github.com/2096779623/lx-music-mobile/tree/beta')
+  }
   const openLicensePage = () => {
     void openUrl('http://www.apache.org/licenses/LICENSE-2.0')
   }
