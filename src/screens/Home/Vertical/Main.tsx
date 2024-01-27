@@ -10,6 +10,7 @@ import { createStyle } from '@/utils/tools'
 import PagerView, { type PageScrollStateChangedNativeEvent, type PagerViewOnPageSelectedEvent } from 'react-native-pager-view'
 import { setNavActiveId } from '@/core/common'
 import settingState from '@/store/setting/state'
+import { InteractionManager } from 'react-native'
 import Download from "@/screens/Home/Views/Download";
 
 const hideKeys = [
