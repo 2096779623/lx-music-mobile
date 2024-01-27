@@ -398,9 +398,9 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
 }
 
 interface DownloadOptions {
-  isDownloadLrc: boolean,
-  isEnableDownload: boolean,
-  isSkipFile: boolean
+  isDownloadLrc: true,
+  isEnableDownload: true,
+  isSkipFile: true
 }
 
 
