@@ -14,8 +14,29 @@ import BackgroundTimer from 'react-native-background-timer'
 import { apis } from '@/utils/musicSdk/api-source'
 import RNFetchBlob from 'rn-fetch-blob';
 import {getLyricInfo} from "@/core/music/index";
+import {getData, saveData} from "@/plugins/storage";
+import {storageDataPrefix} from '@/config/constant'
+import Toast from "@/navigation/components/Toast";
 
-function getFileExtension(url:string) {
+export async function requestStoragePermission() {
+  const granted = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+    {
+      title: '存储读写权限申请',
+        message:
+          '洛雪音乐助手需要使用存储读写权限才能读取音乐.',
+        buttonNeutral: '一会再问我',
+        buttonNegative: '取消',
+        buttonPositive: '确定',
+    },
+  );
+  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    return Promise.resolve();
+  }
+  return Promise.reject();
+}
+
+export function getFileExtension(url:string) {
   // 使用正则表达式匹配URL中的文件扩展名
   const match = url.match(/\.([0-9a-z]+)(?=[?#]|$)/i);
 
@@ -23,13 +44,21 @@ function getFileExtension(url:string) {
   return match ? match[1] : 'mp3';
 }
 
-const downloadMusicWithLrc = async ({url, fileName, musicInfo}: {url: string, fileName: string, musicInfo: LX.Music.MusicInfoOnline}) => {
+const downloadMusicWithLrc = async ({url, fileName, musicInfo}: {url: string, fileName: string, musicInfo: LX.Music.MusicInfoOnline}, options: DownloadOptions) => {
   const dirs = RNFetchBlob.fs.dirs;
   const extension = getFileExtension(url);
-  const path = `${dirs.DownloadDir}/lx.music/${fileName}.${extension}`;
-
-  try {
-    await Promise.allSettled([
+  let path = `${dirs.DownloadDir}/lx.music/${fileName}.${extension}`;
+  let lrcPath = `${dirs.DownloadDir}/lx.music/${fileName}.lrc`
+  return requestStoragePermission().then(async ()=>{
+    const exists = await RNFetchBlob.fs.exists(path);
+    if(exists && options.isSkipFile){
+      return Promise.reject('下载目录存在相同文件已跳过')
+    }
+    if(exists && !options.isSkipFile){
+      path = `${dirs.DownloadDir}/lx.music/${fileName}_${Date.now()}.${extension}`;
+      lrcPath = `${dirs.DownloadDir}/lx.music/${fileName}_${Date.now()}.lrc`
+    }
+    const task: Promise<any>[] = [
       RNFetchBlob.config({
         fileCache: true,
         addAndroidDownloads: {
@@ -38,40 +67,32 @@ const downloadMusicWithLrc = async ({url, fileName, musicInfo}: {url: string, fi
           path: path,
           description: 'Downloading file.',
         },
-      })
-        .fetch('GET', url),
+      }).fetch('GET', url)
+    ]
+    if(options.isDownloadLrc) task.push(
       getLyricInfo({musicInfo, onToggleSource: ()=>{}}).then(async ({lyric})=>{
-        if (Platform.OS === 'android' && Platform.Version === 29){ // android 10
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-              title: '需要存储权限',
-              message: '为了保存音乐歌词以供离线使用，我们需要访问您的设备存储。',
-              buttonNeutral: '稍后询问',
-              buttonNegative: '拒绝',
-              buttonPositive: '允许',
-            },
-          )
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        if (Platform.OS === 'android'){
+          return requestStoragePermission().then(()=>{
             return RNFetchBlob.fs.writeFile(
-              `${dirs.DownloadDir}/lx.music/${fileName}.lrc`,
+              lrcPath,
               lyric,
               'utf8'
             )
-          }
-          return Promise.reject()
+          })
         }
         return RNFetchBlob.fs.writeFile(
-          `${dirs.DownloadDir}/lx.music/${fileName}.lrc`,
+          lrcPath,
           lyric,
           'utf8'
         )
       })
-    ])
-    console.log('File downloaded successfully.')
-  } catch (error) {
-    console.error(JSON.stringify(error))
-  }
+    )
+
+    return Promise.allSettled(task)
+
+  }).catch((e)=>{
+    return Promise.reject(e ?? "权限获取失败")
+  })
 };
 
 
@@ -294,7 +315,7 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
   let musicInfo: LX.Music.MusicInfoOnline | null = null
   let itemQuality: LX.Quality | null = null
   // eslint-disable-next-line no-cond-assign
-  while (musicInfo = (musicInfos.shift()!)) {
+  while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     if (!assertApiSupport(musicInfo.source)) continue
@@ -376,23 +397,31 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
   })
 }
 
-export const downloadMusic = (musicInfo: LX.Music.MusicInfoOnline)=>{
+interface DownloadOptions {
+  isDownloadLrc: boolean,
+  isEnableDownload: boolean,
+  isSkipFile: boolean
+}
+
+
+export const downloadMusic = (musicInfo: LX.Music.MusicInfoOnline, options: DownloadOptions, quality?: LX.Quality)=>{
   toast('开始下载...')
   handleGetOnlineMusicUrl({
     musicInfo: musicInfo,
     isRefresh:false,
     allowToggleSource: true,
+    quality,
     onToggleSource:()=>{},
-  }).then(res=>{
+  }).then(async res=>{
     return downloadMusicWithLrc({
       url: res.url,
       fileName: `${res.musicInfo.singer}-${res.musicInfo.name}`,
       musicInfo
-    })
+    }, options)
   }).then(()=>{
     toast('下载成功')
-  }).catch(()=>{
-    toast('获取下载地址失败')
+  }).catch((msg)=>{
+    toast(msg || '获取下载地址失败')
   })
 }
 export const getOnlineOtherSourcePicUrl = async({ musicInfos, onToggleSource, isRefresh, retryedSource = [] }: {
@@ -407,7 +436,7 @@ export const getOnlineOtherSourcePicUrl = async({ musicInfos, onToggleSource, is
 }> => {
   let musicInfo: LX.Music.MusicInfoOnline | null = null
   // eslint-disable-next-line no-cond-assign
-  while (musicInfo = (musicInfos.shift()!)) {
+  while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     // if (!assertApiSupport(musicInfo.source)) continue
@@ -490,7 +519,7 @@ export const getOnlineOtherSourceLyricInfo = async({ musicInfos, onToggleSource,
 }> => {
   let musicInfo: LX.Music.MusicInfoOnline | null = null
   // eslint-disable-next-line no-cond-assign
-  while (musicInfo = (musicInfos.shift()!)) {
+  while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     // if (!assertApiSupport(musicInfo.source)) continue
