@@ -92,6 +92,8 @@ export default memo(() => {
       <View style={styles.part}>
         <Text style={styles.text}>By：</Text>
         <Text style={styles.text}>落雪无痕</Text>
+        </View>
+        <View style={styles.part}>
         <Text style={styles.text}>Forker:</Text>
         <Text style={styles.text}>Kevin Williams</Text>
       </View>
