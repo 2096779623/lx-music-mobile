@@ -164,13 +164,10 @@ export default () => {
         onMove={handleMoveMusic}
         onEditMetadata={handleEditMetadata}
         onChangePosition={info => musicPositionModalRef.current?.show(info)}
-<<<<<<< HEAD
         onToggleSource={info => musicToggleModalRef.current?.show(info)}
-=======
         onDownload={(info)=>{
           downloadMusic(info.musicInfo as LX.Music.MusicInfoOnline)
         }}
->>>>>>> afe4fe7 (support download)
       />
       <MetadataEditModal
         ref={metadataEditTypeRef}
